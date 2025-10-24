@@ -1,21 +1,9 @@
 name = "spatial-sound"
 compatibility_date = "2024-10-01"
+pages_build_output_dir = "dist"
 
-[env.production]
-account_id = ""
-zone_id = ""
+[build]
+command = "npm run build"
 
-[[env.production.rules]]
-pattern = "*.js"
-action = "set_cache_control"
-cache_control = "public, max-age=31536000, immutable"
-
-[[env.production.rules]]
-pattern = "*.css"
-action = "set_cache_control"
-cache_control = "public, max-age=31536000, immutable"
-
-[[env.production.rules]]
-pattern = "*.mp3"
-action = "set_cache_control"
-cache_control = "public, max-age=604800"
+[build.environment_variables]
+NODE_VERSION = "18"
