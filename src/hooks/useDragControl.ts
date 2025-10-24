@@ -39,7 +39,7 @@ export const useDragControl = ({ autoRotate, onPositionUpdate }: UseDragControlP
 
   useEffect(() => {
     if (isDragging) {
-      const mouseMoveHandler = (e: MouseEvent) => {
+      const mouseMoveHandler = () => {
         // Ce handler sera configuré dans le composant avec la référence SVG
       };
 
