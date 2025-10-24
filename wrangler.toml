@@ -1,6 +1,5 @@
-name = "spatial-sound"
+name = "realtime-games-frontend"
 compatibility_date = "2024-10-01"
-pages_build_output_dir = "dist"
 
-[build]
-command = "npm run build"
+# Le dossier de build généré par Vite
+pages_build_output_dir = "./dist"
