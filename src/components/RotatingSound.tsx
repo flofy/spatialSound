@@ -39,28 +39,34 @@ const RotatingSound: React.FC = () => {
     onPositionUpdate: handlePositionUpdate
   });
 
-  const { isDragging, handleMouseDown, handleMouseMove } = useDragControl({
+  const { isDragging, handleMouseDown, handleTouchStart, handleMouseMove, handleTouchMove } = useDragControl({
     autoRotate,
     onPositionUpdate: handlePositionUpdate
   });
 
-  // Configuration du gestionnaire de mouvement de souris avec la référence SVG
+  // Configuration des gestionnaires de mouvement (souris et tactile) avec la référence SVG
   useEffect(() => {
     if (isDragging) {
       const mouseMoveHandler = (e: MouseEvent) => {
         handleMouseMove(e, svgRef.current);
       };
 
+      const touchMoveHandler = (e: TouchEvent) => {
+        handleTouchMove(e, svgRef.current);
+      };
+
       window.addEventListener('mousemove', mouseMoveHandler);
+      window.addEventListener('touchmove', touchMoveHandler, { passive: false });
       window.addEventListener('mouseup', () => {
         // Le handleMouseUp est géré dans le hook useDragControl
       });
       
       return () => {
         window.removeEventListener('mousemove', mouseMoveHandler);
+        window.removeEventListener('touchmove', touchMoveHandler);
       };
     }
-  }, [isDragging, handleMouseMove]);
+  }, [isDragging, handleMouseMove, handleTouchMove]);
 
   const togglePlay = async () => {
     if (!isPlaying) {
@@ -248,14 +254,14 @@ const RotatingSound: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-4 flex items-center justify-center">
-      <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-6 max-w-4xl w-full shadow-2xl">
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-white mb-2">Son 3D Spatial</h1>
-          <p className="text-purple-200 text-sm">🎧 Expérience audio immersive en 3D</p>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-2 sm:p-4 flex items-center justify-center">
+      <div className="bg-white/10 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-w-4xl w-full shadow-2xl">
+        <div className="text-center mb-4 sm:mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Son 3D Spatial</h1>
+          <p className="text-purple-200 text-xs sm:text-sm">🎧 Expérience audio immersive en 3D</p>
         </div>
         
-        <div className="grid lg:grid-cols-2 gap-6 items-start">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 items-start">
           {/* Visualisation */}
           <div className="flex flex-col items-center">
             <SpatialVisualizer
@@ -264,6 +270,7 @@ const RotatingSound: React.FC = () => {
               autoRotate={autoRotate}
               isDragging={isDragging}
               onMouseDown={handleMouseDown}
+              onTouchStart={handleTouchStart}
               svgRef={svgRef}
             />
           </div>

@@ -7,6 +7,7 @@ interface SpatialVisualizerProps {
   autoRotate: boolean;
   isDragging: boolean;
   onMouseDown: () => void;
+  onTouchStart: () => void;
   svgRef: React.RefObject<SVGSVGElement>;
 }
 
@@ -16,6 +17,7 @@ const SpatialVisualizer: React.FC<SpatialVisualizerProps> = ({
   autoRotate,
   isDragging,
   onMouseDown,
+  onTouchStart,
   svgRef
 }) => {
   // Calculer la distance du centre pour l'effet visuel
@@ -30,13 +32,13 @@ const SpatialVisualizer: React.FC<SpatialVisualizerProps> = ({
   const normalizedDistance = Math.min(distance / maxDistance, 1);
   const proximityOpacity = !autoRotate ? 1 - (normalizedDistance * 0.6) : 1; // Réduction max de 60%
   return (
-    <div className="relative w-80 h-80 mx-auto mb-8 bg-black/20 rounded-full">
+    <div className="relative w-80 h-80 mx-auto mb-4 sm:mb-8 bg-black/20 rounded-full touch-none">
       <svg 
         ref={svgRef}
         width="320" 
         height="320" 
         className="absolute inset-0"
-        style={{ cursor: !autoRotate ? 'crosshair' : 'default' }}
+        style={{ cursor: !autoRotate ? 'crosshair' : 'default', touchAction: 'none' }}
       >
         <circle cx="160" cy="160" r="120" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2" strokeDasharray="5,5" />
         <line x1="160" y1="40" x2="160" y2="280" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
@@ -61,6 +63,7 @@ const SpatialVisualizer: React.FC<SpatialVisualizerProps> = ({
         <g 
           style={{ cursor: !autoRotate ? 'grab' : 'default' }}
           onMouseDown={onMouseDown}
+          onTouchStart={onTouchStart}
         >
           <circle 
             cx={position.x} 
@@ -101,16 +104,22 @@ const SpatialVisualizer: React.FC<SpatialVisualizerProps> = ({
       
       {/* Indicateur d'intensité en mode manuel */}
       {!autoRotate && isPlaying && (
-        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/50 rounded-lg px-3 py-1">
-          <div className="flex items-center gap-2 text-white text-sm">
-            <span>🔊</span>
-            <div className="w-16 bg-gray-600 rounded-full h-2">
-              <div 
-                className="bg-gradient-to-r from-red-500 to-green-500 h-2 rounded-full transition-all duration-150"
-                style={{ width: `${proximityOpacity * 100}%` }}
-              />
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-sm rounded-xl px-4 py-3 shadow-lg border border-white/20">
+          <div className="flex items-center gap-3 text-white">
+            <span className="text-xl">🔊</span>
+            <div className="flex flex-col gap-1">
+              <div className="w-32 bg-gray-700 rounded-full h-3 overflow-hidden shadow-inner">
+                <div 
+                  className="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 h-3 rounded-full transition-all duration-150 shadow-lg"
+                  style={{ width: `${proximityOpacity * 100}%` }}
+                />
+              </div>
+              <div className="flex justify-between text-xs text-gray-300">
+                <span>Loin</span>
+                <span className="font-bold text-white">{Math.round(proximityOpacity * 100)}%</span>
+                <span>Proche</span>
+              </div>
             </div>
-            <span className="text-xs">{Math.round(proximityOpacity * 100)}%</span>
           </div>
         </div>
       )}

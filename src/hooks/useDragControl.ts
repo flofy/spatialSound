@@ -15,6 +15,12 @@ export const useDragControl = ({ autoRotate, onPositionUpdate }: UseDragControlP
     }
   };
 
+  const handleTouchStart = () => {
+    if (!autoRotate) {
+      setIsDragging(true);
+    }
+  };
+
   const handleMouseMove = (e: MouseEvent, svgElement: SVGSVGElement | null) => {
     if (!isDragging || autoRotate || !svgElement) return;
     
@@ -33,7 +39,32 @@ export const useDragControl = ({ autoRotate, onPositionUpdate }: UseDragControlP
     }
   };
 
+  const handleTouchMove = (e: TouchEvent, svgElement: SVGSVGElement | null) => {
+    if (!isDragging || autoRotate || !svgElement) return;
+    
+    e.preventDefault(); // Empêche le scroll pendant le drag
+    
+    const touch = e.touches[0];
+    const rect = svgElement.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    
+    const centerX = 160;
+    const centerY = 160;
+    const dx = x - centerX;
+    const dy = y - centerY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    if (distance <= 120) {
+      onPositionUpdate({ x, y });
+    }
+  };
+
   const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleTouchEnd = () => {
     setIsDragging(false);
   };
 
@@ -45,10 +76,12 @@ export const useDragControl = ({ autoRotate, onPositionUpdate }: UseDragControlP
 
       window.addEventListener('mousemove', mouseMoveHandler);
       window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener('touchend', handleTouchEnd);
       
       return () => {
         window.removeEventListener('mousemove', mouseMoveHandler);
         window.removeEventListener('mouseup', handleMouseUp);
+        window.removeEventListener('touchend', handleTouchEnd);
       };
     }
   }, [isDragging]);
@@ -56,7 +89,10 @@ export const useDragControl = ({ autoRotate, onPositionUpdate }: UseDragControlP
   return {
     isDragging,
     handleMouseDown,
+    handleTouchStart,
     handleMouseMove,
-    handleMouseUp
+    handleTouchMove,
+    handleMouseUp,
+    handleTouchEnd
   };
 };

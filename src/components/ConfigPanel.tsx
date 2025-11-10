@@ -55,7 +55,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
           <div className="flex justify-center">
             <button
               onClick={onTogglePlay}
-              className={`px-6 py-3 rounded-lg font-bold text-white btn-hover shadow-lg ${
+              className={`px-8 py-4 rounded-lg font-bold text-white btn-hover shadow-lg min-h-[52px] ${
                 isPlaying 
                   ? 'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600' 
                   : 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600'
@@ -80,24 +80,24 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => onAutoRotateChange(true)}
-                className={`py-2 px-3 rounded-lg font-medium transition-all text-sm ${
+                className={`py-3 px-3 rounded-lg font-medium transition-all text-sm min-h-[48px] ${
                   autoRotate
                     ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
                     : 'bg-white/10 text-white/70 hover:bg-white/20'
                 }`}
               >
-                <RotateCw size={14} className="inline mr-1" />
+                <RotateCw size={16} className="inline mr-1" />
                 Auto
               </button>
               <button
                 onClick={() => onAutoRotateChange(false)}
-                className={`py-2 px-3 rounded-lg font-medium transition-all text-sm ${
+                className={`py-3 px-3 rounded-lg font-medium transition-all text-sm min-h-[48px] ${
                   !autoRotate
                     ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
                     : 'bg-white/10 text-white/70 hover:bg-white/20'
                 }`}
               >
-                <Move size={14} className="inline mr-1" />
+                <Move size={16} className="inline mr-1" />
                 Manuel
               </button>
             </div>
@@ -187,43 +187,73 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({
         <div className="space-y-4">
           {/* Volume */}
           <div>
-            <label className="flex items-center justify-between text-white mb-2 text-sm">
+            <label className="flex items-center justify-between text-white mb-3 text-sm">
               <span className="flex items-center gap-2">
                 <Volume2 size={16} />
                 Volume
               </span>
-              <span className="font-mono text-xs">{Math.round((volume + 30) * 100 / 30)}%</span>
+              <span className="font-mono text-xs bg-white/10 px-2 py-1 rounded">{Math.round((volume + 30) * 100 / 30)}%</span>
             </label>
-            <input
-              type="range"
-              min="-30"
-              max="0"
-              step="1"
-              value={volume}
-              onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
-              className="w-full accent-purple-500"
-            />
+            <div className="relative h-8 flex items-center">
+              {/* Track visible */}
+              <div className="absolute inset-x-0 h-2 bg-white/20 rounded-full border border-white/30"></div>
+              {/* Fill */}
+              <div 
+                className="absolute left-0 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
+                style={{ width: `${((volume + 30) / 30) * 100}%` }}
+              ></div>
+              {/* Input range invisible au-dessus */}
+              <input
+                type="range"
+                min="-30"
+                max="0"
+                step="1"
+                value={volume}
+                onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
+                className="absolute inset-0 w-full opacity-0 cursor-pointer z-10"
+              />
+              {/* Thumb personnalisé */}
+              <div 
+                className="absolute w-5 h-5 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full border-2 border-white shadow-lg pointer-events-none z-20"
+                style={{ left: `calc(${((volume + 30) / 30) * 100}% - 10px)` }}
+              ></div>
+            </div>
           </div>
 
           {/* Vitesse de rotation */}
           {autoRotate && (
             <div>
-              <label className="flex items-center justify-between text-white mb-2 text-sm">
+              <label className="flex items-center justify-between text-white mb-3 text-sm">
                 <span className="flex items-center gap-2">
                   <RotateCw size={16} />
                   Vitesse
                 </span>
-                <span className="font-mono text-xs">{speed.toFixed(1)}x</span>
+                <span className="font-mono text-xs bg-white/10 px-2 py-1 rounded">{speed.toFixed(1)}x</span>
               </label>
-              <input
-                type="range"
-                min="0.2"
-                max="3"
-                step="0.1"
-                value={speed}
-                onChange={(e) => onSpeedChange(parseFloat(e.target.value))}
-                className="w-full accent-purple-500"
-              />
+              <div className="relative h-8 flex items-center">
+                {/* Track visible */}
+                <div className="absolute inset-x-0 h-2 bg-white/20 rounded-full border border-white/30"></div>
+                {/* Fill */}
+                <div 
+                  className="absolute left-0 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
+                  style={{ width: `${((speed - 0.2) / 2.8) * 100}%` }}
+                ></div>
+                {/* Input range invisible au-dessus */}
+                <input
+                  type="range"
+                  min="0.2"
+                  max="3"
+                  step="0.1"
+                  value={speed}
+                  onChange={(e) => onSpeedChange(parseFloat(e.target.value))}
+                  className="absolute inset-0 w-full opacity-0 cursor-pointer z-10"
+                />
+                {/* Thumb personnalisé */}
+                <div 
+                  className="absolute w-5 h-5 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full border-2 border-white shadow-lg pointer-events-none z-20"
+                  style={{ left: `calc(${((speed - 0.2) / 2.8) * 100}% - 10px)` }}
+                ></div>
+              </div>
             </div>
           )}
         </div>

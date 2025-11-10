@@ -1,0 +1,20 @@
+{
+  "name": "Son 3D Spatial",
+  "short_name": "Spatial Audio",
+  "description": "Expérience audio spatiale 3D interactive avec HRTF",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e1b4b",
+  "theme_color": "#6366f1",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["entertainment", "music"],
+  "prefer_related_applications": false
+}
